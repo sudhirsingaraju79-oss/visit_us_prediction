@@ -6,7 +6,7 @@ from sklearn.pipeline import make_pipeline
 # for model training, tuning, and evaluation
 import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import accuracy_score, classification_report, recall_score
+from sklearn.metrics import accuracy_score, classification_report, recall_score,f1_score
 # for model serialization
 import joblib
 # for creating a folder
