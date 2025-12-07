@@ -58,6 +58,12 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python train.py
+      - name: upload model artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: trained-model
+          path: visist-us-prediction/model
+      
 
 
   deploy-hosting:
