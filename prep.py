@@ -37,9 +37,6 @@ label_encoder = LabelEncoder()
 for col in cat_feat:
   df[col] = label_encoder.fit_transform(df[col].astype(str))
 
-
-
-
 # Perform train-test split
 Xtrain, Xtest, ytrain, ytest = train_test_split(
     X, y, test_size=0.2, random_state=42

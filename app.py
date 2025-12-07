@@ -14,7 +14,7 @@ data_path = "hf://datasets/sudhirpgcmma02/visit-us-prediction/tourism.csv"
 # Helper Function: Auto-generate CustomerID
 # ---------------------------------------------
 
-def get_next_customer_id(data_path="tourism.csv"):
+def get_next_customer_id(data_path):
     if os.path.exists(data_path):
         df = pd.read_csv(data_path)
         if "CustomerID" in df.columns and len(df) > 0:
@@ -101,7 +101,8 @@ if submitted:
     st.subheader("Predict Purchase (Model Inference)")
 
 
-    model_path = "xgb_model.pkl"
+    model_path = "/content/mlartifacts/757605901758509523/models/m-0d3f89514a8947e68f304eb55d678789/artifacts/model.pkl"
+    
     if os.path.exists(model_path):
     import pickle
     model = pickle.load(open(model_path, "rb"))
@@ -146,17 +147,11 @@ else:
 # Show Existing Data
 # ---------------------------------------------
 st.subheader("Stored Customer Data")
-if os.path.exists("customer_data.csv"):
-    stored_df = pd.read_csv("customer_data.csv")
+if os.path.exists(".csv"):
+    stored_df = pd.read_csv("hf://datasets/sudhirpgcmma02/visit-us-prediction/tourism.csv")
     st.dataframe(stored_df)
 else:
     st.info("No data stored yet.")
-
-"""if st.button("Possible Purchase Prediction  "):
-    prediction = model.predict(input_data)[0]
-    result = "Machine Failure" if prediction == 1 else "Possible to Purchase"
-    st.subheader("Prediction Result:")
-    st.success(f"The model predicts: **{result}**")"""
 
 # If you want to trigger training from the UI (optional)
 train_button = st.sidebar.button("Trigger Training Locally (calls src/train.py)")
@@ -164,7 +159,7 @@ if train_button:
     st.info("Triggering training script — this runs on the machine hosting Streamlit.")
     import subprocess
     # Use a small dataset path; adapt as needed
-    res = subprocess.run(["python", "/content/tourism_project/model_building/train.py", "--data-csv", "trourism.csv", "--out-dir", "/content/tourism_project/data/"], capture_output=True, text=True)
+    res = subprocess.run(["python", "tourism_project/model_building/train.py", "--data-csv", "trourism.csv", "--out-dir", "tourism_project/data/"], capture_output=True, text=True)
     st.text(res.stdout)
     if res.returncode != 0:
         st.error(res.stderr)
