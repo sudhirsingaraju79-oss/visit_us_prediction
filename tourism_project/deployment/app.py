@@ -1,0 +1,113 @@
+import streamlit as st
+import joblib
+import pandas as pd
+import os
+
+# -----------------------------
+# Load Model
+# -----------------------------
+model = joblib.load("best_visit_us_prediction_v1.joblib")
+
+st.title("Visit With Us – Customer Purchase Prediction")
+st.write("Fill customer details, predict purchase, and optionally store the record.")
+
+# -----------------------------
+# Input Fields
+# -----------------------------
+
+CustomerID = st.text_input("Customer ID")
+Age = st.number_input("Age", min_value=1, max_value=100, step=1)
+TypeofContact = st.selectbox("Type of Contact", ["Company Invited", "Self Inquiry"])
+CityTier = st.selectbox("City Tier", [1, 2, 3])
+Occupation = st.selectbox("Occupation", ["Salaried", "Small Business", "Large Business", "Free Lancer"])
+Gender = st.selectbox("Gender", ["Male", "Female"])
+NumberOfPersonVisiting = st.number_input("Number Of Person Visiting", min_value=1, max_value=20, step=1)
+
+PreferredPropertyStar = st.selectbox("Preferred Property Star", [3, 4, 5])
+MaritalStatus = st.selectbox("Marital Status", ["Single", "Married", "Divorced"])
+NumberOfTrips = st.number_input("Trips per Year", min_value=0, max_value=50, step=1)
+Passport = st.selectbox("Passport", [0, 1])
+OwnCar = st.selectbox("Own Car", [0, 1])
+
+NumberOfChildrenVisiting = st.number_input(
+    "Children Visiting (Below 5 yrs)", min_value=0, max_value=10, step=1
+)
+
+Designation = st.selectbox(
+    "Designation", ["Executive", "Manager", "Senior Manager", "AVP", "VP"]
+)
+
+MonthlyIncome = st.number_input("Monthly Income", min_value=1000, max_value=1000000, step=1000)
+PitchSatisfactionScore = st.number_input("Pitch Satisfaction Score", min_value=1, max_value=5, step=1)
+
+ProductPitched = st.selectbox(
+    "Product Pitched", ["Basic", "Deluxe", "Super Deluxe", "King", "Queen"]
+)
+
+NumberOfFollowups = st.number_input("Number Of Followups", min_value=0, max_value=20, step=1)
+DurationOfPitch = st.number_input("Duration Of Pitch (Minutes)", min_value=1, max_value=200, step=1)
+
+
+# -----------------------------
+# Predict Button
+# -----------------------------
+if st.button("Predict"):
+    input_data = {
+        "CustomerID": CustomerID,
+        "Age": Age,
+        "TypeofContact": TypeofContact,
+        "CityTier": CityTier,
+        "Occupation": Occupation,
+        "Gender": Gender,
+        "NumberOfPersonVisiting": NumberOfPersonVisiting,
+        "PreferredPropertyStar": PreferredPropertyStar,
+        "MaritalStatus": MaritalStatus,
+        "NumberOfTrips": NumberOfTrips,
+        "Passport": Passport,
+        "OwnCar": OwnCar,
+        "NumberOfChildrenVisiting": NumberOfChildrenVisiting,
+        "Designation": Designation,
+        "MonthlyIncome": MonthlyIncome,
+        "PitchSatisfactionScore": PitchSatisfactionScore,
+        "ProductPitched": ProductPitched,
+        "NumberOfFollowups": NumberOfFollowups,
+        "DurationOfPitch": DurationOfPitch,
+    }
+
+    input_df = pd.DataFrame([input_data])
+
+    # Predict
+    prediction = model.predict(input_df.drop(columns=["CustomerID"]))[0]
+    prob = model.predict_proba(input_df.drop(columns=["CustomerID"]))[0][1]
+
+    st.subheader("Prediction Result")
+
+    if prediction == 1:
+        st.success(f"Customer likely to purchase the package. Probability: {prob:.2f}")
+    else:
+        st.error(f"Customer NOT likely to purchase the package. Probability: {prob:.2f}")
+
+    # Save prediction to dataframe
+    input_data["Predicted_ProdTaken"] = prediction
+    input_data["Probability"] = round(prob, 4)
+
+    st.write("### Record to be saved:")
+    st.dataframe(pd.DataFrame([input_data]))
+
+    # -----------------------------
+    # SAVE RECORDS SECTION
+    # -----------------------------
+    if st.button("Save Record"):
+        file_path = "records.csv"
+
+        # If file exists → append
+        if os.path.exists(file_path):
+            existing_df = pd.read_csv(file_path)
+            updated_df = pd.concat([existing_df, pd.DataFrame([input_data])], ignore_index=True)
+        else:
+            # Create new CSV
+            updated_df = pd.DataFrame([input_data])
+
+        updated_df.to_csv(file_path, index=False)
+
+        st.success("Record saved successfully!")
