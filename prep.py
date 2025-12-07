@@ -17,7 +17,7 @@ api = HfApi(token=os.getenv("HF_TOKEN"))
 #DATASET_PATH = "hf://datasets/tourism.csv"
 file_path= hf_hub_download(
     repo_id="sudhirpgcmma02/visit-us-prediction",
-    filename="tourism.csv"
+    filename="data/tourism.csv"
 )
 df = pd.read_csv(file_path)
 print("Dataset loaded successfully.")
