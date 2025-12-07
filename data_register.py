@@ -22,7 +22,7 @@ except RepositoryNotFoundError:
 local_file ="tourism.csv"
 folder_path="data/tourism.csv"
 
-api.upload_folder(
+api.upload_file(
     path_or_fileobj=local_file,
     path_in_repo=folder_path,
     repo_id=repo_id,
