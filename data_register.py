@@ -19,9 +19,12 @@ except RepositoryNotFoundError:
     create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
     print(f"Space '{repo_id}' created.")
 
+local_file ="tourism.csv"
+folder_path="data/tourism.csv"
+
 api.upload_folder(
-    #folder_path="week_3_mls/data",
-    folder_path=folder_path 
+    path_or_fileobj=local_file,
+    path_in_repo=folder_path,
     repo_id=repo_id,
     repo_type=repo_type,
 )
