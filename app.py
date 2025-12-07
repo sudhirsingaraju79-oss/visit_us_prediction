@@ -14,7 +14,7 @@ data_path = "hf://datasets/sudhirpgcmma02/visit-us-prediction/tourism.csv"
 # Helper Function: Auto-generate CustomerID
 # ---------------------------------------------
 
-def get_next_customer_id(data_path):
+def get_next_customer_id(data_path="hf://datasets/sudhirpgcmma02/visit-us-prediction/tourism.csv"):
     if os.path.exists(data_path):
         df = pd.read_csv(data_path)
         if "CustomerID" in df.columns and len(df) > 0:
