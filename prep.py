@@ -34,7 +34,7 @@ X = df.drop(columns=[target_col])
 y = df[target_col]
 
 # encoding
-num_feat = X.select_dtypes(include=[np.number])
+num_feat = X.select_dtypes(include=['number'])
 cat_feat=X.select_dtypes(include=['object'])
 
 # Encoding the categorical 'Type' column
