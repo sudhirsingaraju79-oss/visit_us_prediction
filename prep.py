@@ -25,7 +25,7 @@ print("Dataset loaded successfully.")
 # Drop the unique identifier
 # customerid unique id
 #df.drop(columns=['UDI'], inplace=True)
-df.drop(columns=['customerid'], inplace=True)
+df.drop(columns=['CustomerID'], inplace=True)
 
 target_col = 'ProdTaken'
 
