@@ -13,13 +13,13 @@ from huggingface_hub import login, HfApi, hf_hub_download
 # Define constants for the dataset and output paths
 api = HfApi(token=os.getenv("HF_TOKEN"))
 
-#DATASET_PATH = "hf://datasets/sudhirpgcmma02/visit-us-prediction/tourism.csv"
+DATASET_PATH = "hf://datasets/sudhirpgcmma02/visit-us-prediction/data/tourism.csv"
 #DATASET_PATH = "hf://datasets/tourism.csv"
-file_path= hf_hub_download(
+"""file_path= hf_hub_download(
     repo_id="sudhirpgcmma02/visit-us-prediction",
     filename="data/tourism.csv"
-)
-df = pd.read_csv(file_path)
+)"""
+df = pd.read_csv(DATASET_PATH)
 print("Dataset loaded successfully.")
 
 # Drop the unique identifier
