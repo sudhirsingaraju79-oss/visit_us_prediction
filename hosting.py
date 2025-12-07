@@ -4,7 +4,7 @@ import os
 api = HfApi(token=os.getenv("HF_TOKEN"))
 
 files = ["app.py","data_register.py","Dockerfile","hosting.py","prep.py","requirements.txt","train.py",
-         "tourism.csv","model.pkl","MLmodel","python_env.yaml"]
+         "tourism.csv","model.pkl","MLmodel","python_env.yaml","best_visit_us_prediction_v1.joblib"]
 
 for f in files:
     api.upload_file(
@@ -14,14 +14,3 @@ for f in files:
         repo_type="space",  # dataset, model, or space
     )
 
-"""
-api.upload_folder(
-    
-    
-    
-    folder_path="./tourism_project",     # the local folder containing your files
-    repo_id="sudhirpgcmma02/visit-us-prediction",          # the target repo
-    repo_type="space",                      # dataset, model, or space
-    path_in_repo="",                          # optional: subfolder path inside the repo
-)
-"""
