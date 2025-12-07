@@ -21,7 +21,7 @@ except RepositoryNotFoundError:
 
 api.upload_folder(
     #folder_path="week_3_mls/data",
-    folder_path="data",
+    folder_path=folder_path #"tourism.csv",
     repo_id=repo_id,
     repo_type=repo_type,
 )
