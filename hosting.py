@@ -3,7 +3,8 @@ import os
 
 api = HfApi(token=os.getenv("HF_TOKEN"))
 
-files = ["app.py","data_register.py","Dockerfile","hosting.py","prep.py","requirements.txt","train.py","tourism.csv"]
+files = ["app.py","data_register.py","Dockerfile","hosting.py","prep.py","requirements.txt","train.py",
+         "tourism.csv","model.pkl","MLmodel","python_env.yaml"]
 
 for f in files:
     api.upload_file(

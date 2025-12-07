@@ -24,19 +24,19 @@ def get_next_customer_id(data_path="hf://datasets/sudhirpgcmma02/visit-us-predic
 # ---------------------------------------------
 # Streamlit UI
 # ---------------------------------------------
-st.title("Customer Purchase Data Entry App")
+st.title("Visit With Us - Cutomer Purchase Prediction  APP")
 
 st.subheader("Enter Customer Details")
 
 # Auto-generate CustomerID
-customer_id = get_next_customer_id() #str(uuid.uuid4()) #
+customer_id = get_next_customer_id()
 st.info(f"Auto-generated CustomerID: {customer_id}")
 
 # ---------------------------------------------
 # Input Form
 # ---------------------------------------------
 with st.form("customer_form"):
-    ProdTaken = st.selectbox("Product Taken (Target)", [0, 1])
+    #ProdTaken = st.selectbox("Product Taken (Target)", [0, 1])
     Age = st.number_input("Age", min_value=0, max_value=120, step=1)
     TypeofContact = st.selectbox("Type of Contact", ["Company Invited", "Self Inquiry"])
     CityTier = st.selectbox("City Tier", [1, 2, 3])
@@ -66,7 +66,7 @@ with st.form("customer_form"):
 if submitted:
     new_row = {
         "CustomerID": customer_id,
-        "ProdTaken": ProdTaken,
+        #"ProdTaken": ProdTaken,
         "Age": Age,
         "TypeofContact": TypeofContact,
         "CityTier": CityTier,
@@ -87,7 +87,7 @@ if submitted:
         "DurationOfPitch": DurationOfPitch
     }
 
-
+    data_path="hf://datasets/sudhirpgcmma02/visit-us-prediction/tourism.csv"
 
     if os.path.exists(data_path):
         df = pd.read_csv(data_path)
@@ -108,7 +108,7 @@ if submitted:
       model = pickle.load(open(model_path, "rb"))
       st.info("Model Loaded. Enter details for prediction:")
 
-
+    """
     with st.form("predict_form"):
       Age_p = st.number_input("Age", min_value=0, max_value=120, step=1)
       CityTier_p = st.selectbox("City Tier", [1, 2, 3])
@@ -118,31 +118,37 @@ if submitted:
       MonthlyIncome_p = st.number_input("Monthly Income", min_value=0)
       PitchSatisfactionScore_p = st.slider("Pitch Satisfaction Score", 1, 5)
       NumberOfFollowups_p = st.number_input("Follow-ups", min_value=0, max_value=20)
-      DurationOfPitch_p = st.number_input("Duration of Pitch", min_value=0, max_value=120)
+      DurationOfPitch_p = st.number_input("Duration of Pitch", min_value=0, max_value=120)"""
+
       predict_button = st.form_submit_button("Predict")
 
 
-    if predict_button:
+      if predict_button:
+          """  
+          pred_df = pd.DataFrame([{
+          "Age": Age_p,
+          "CityTier": CityTier_p,
+          "NumberOfTrips": NumberOfTrips_p,
+          "Passport": Passport_p,
+          "OwnCar": OwnCar_p,
+          "MonthlyIncome": MonthlyIncome_p,
+          "PitchSatisfactionScore": PitchSatisfactionScore_p,
+          "NumberOfFollowups": NumberOfFollowups_p,
+          "DurationOfPitch": DurationOfPitch_p
+          }])
+          """
+          pred_df = pd.DataFrame(new_row)
 
-      pred_df = pd.DataFrame([{
-      "Age": Age_p,
-      "CityTier": CityTier_p,
-      "NumberOfTrips": NumberOfTrips_p,
-      "Passport": Passport_p,
-      "OwnCar": OwnCar_p,
-      "MonthlyIncome": MonthlyIncome_p,
-      "PitchSatisfactionScore": PitchSatisfactionScore_p,
-      "NumberOfFollowups": NumberOfFollowups_p,
-      "DurationOfPitch": DurationOfPitch_p
-      }])
-      pred_prob = model.predict_proba(pred_df)[0][1]
-      pred_label = model.predict(pred_df)[0]
+          pred_prob = model.predict_proba(pred_df)[0][1]
+          pred_label = model.predict(pred_df)[0]
 
 
-    st.success(f"Prediction: {'Will Purchase (1)' if pred_label==1 else 'Will Not Purchase (0)'}")
-    st.write(f"Probability of Purchase: {pred_prob:.2f}")
-else:
-  st.warning("Model file not found. Upload xgb_model.pkl to enable prediction.")
+        st.success(f"Prediction: {'Will Purchase (1)' if pred_label==1 else 'Will Not Purchase (0)'}")
+        st.write(f"Probability of Purchase: {pred_prob:.2f}")
+    else:
+    st.warning("Model file not found. Upload model.pkl to enable prediction.")
+else
+    st.warning("Thank your for our time")
 
 # ---------------------------------------------
 # Show Existing Data
