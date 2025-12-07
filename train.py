@@ -1,4 +1,3 @@
-# week_3_mls/model_building/train.py
 # for data manipulation
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -23,10 +22,10 @@ mlflow.set_experiment("MLOps__visit_us_prediction")
 api = HfApi()
 
 
-Xtrain_path = "hf://datasets/praneeth232/machine-failure-prediction/Xtrain.csv"
-Xtest_path = "hf://datasets/praneeth232/machine-failure-prediction/Xtest.csv"
-ytrain_path = "hf://datasets/praneeth232/machine-failure-prediction/ytrain.csv"
-ytest_path = "hf://datasets/praneeth232/machine-failure-prediction/ytest.csv"
+Xtrain_path = "hf://datasets/sudhirpgcmma02/visit-us-prediction/Xtrain.csv"
+Xtest_path = "hf://datasets/sudhirpgcmma02/visit-us-prediction/Xtest.csv"
+ytrain_path = "hf://datasets/sudhirpgcmma02/visit-us-prediction/ytrain.csv"
+ytest_path = "hf://datasets/sudhirpgcmma02/visit-us-prediction/ytest.csv"
 
 Xtrain = pd.read_csv(Xtrain_path)
 Xtest = pd.read_csv(Xtest_path)
@@ -37,11 +36,10 @@ ytest = pd.read_csv(ytest_path)
 num_feat = Xtrain.select_dtypes(include=[np.number]).columns.tolist()
 cat_feat=Xtrain.select_dtypes(include=['object']).columns.tolist()
 
-# Encoding the categorical categorical column
+# Encoding the categorical 'Type' column
 label_encoder = LabelEncoder()
 for col in cat_feat:
   Xtrain[col] = label_encoder.fit_transform(Xtrain[col].astype(str))
-
 
 # Set the clas weight to handle class imbalance
 class_weight = ytrain.value_counts()[0] / ytrain.value_counts()[1]
@@ -69,6 +67,7 @@ param_grid = {
 # Model pipeline
 model_pipeline = make_pipeline(preprocessor, xgb_model)
 
+#model_pipeline = make_pipeline(preprocessor, xgb_model)
 grid_search = GridSearchCV(model_pipeline, param_grid, cv=5, n_jobs=-1)
 grid_search.fit(Xtrain, ytrain)
 
@@ -83,24 +82,32 @@ rec=recall_score(ytest, y_pred)
 pre=precision_score(ytest, y_pred)
 
 
-
 # Start MLflow run
 with mlflow.start_run():
     # Hyperparameter tuning
-    
+    #grid_search = GridSearchCV(model_pipeline, param_grid, cv=5, n_jobs=-1)
+    #grid_search.fit(Xtrain, ytrain)
+
+    # Log all parameter combinations and their mean test scores
+    # Log each combination as a separate MLflow run
+    # Hyperparameter tuning
+
     # Log best parameters separately in main run
     mlflow.log_params(grid_search.best_params_)
 
     # Store and evaluate the best model
     best_model = grid_search.best_estimator_
 
-    
+    #classification_threshold = 0.45
+
+
     mlflow.log_metric("accuracy",acc)
     mlflow.log_metric("f1-score",f1)
     mlflow.log_metric("recall",rec)
     mlflow.log_metric("precision",pre)
 
     mlflow.sklearn.log_model(best_model,"xgb_best_model")
+
 
 
     # Save the model locally
@@ -126,7 +133,7 @@ with mlflow.start_run():
 
     # create_repo("churn-model", repo_type="model", private=False)
     api.upload_file(
-        path_or_fileobj="best_visit_us_prediction_v1.joblib", # tourism_project
+        path_or_fileobj="best_visit_us_prediction_v1.joblib",
         path_in_repo="best_visit_us_prediction_v1.joblib",
         repo_id=repo_id,
         repo_type=repo_type,

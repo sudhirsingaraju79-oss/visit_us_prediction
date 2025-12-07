@@ -2,10 +2,6 @@ from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
 from huggingface_hub import HfApi, create_repo
 import os
 
-
-"""repo_id = "praneeth232/machine-failure-prediction"
-repo_type = "dataset"""
-
 repo_id = "sudhirpgcmma02/visit-us-prediction"
 repo_type = "dataset"
 
@@ -25,7 +21,7 @@ except RepositoryNotFoundError:
 
 api.upload_folder(
     #folder_path="week_3_mls/data",
-    folder_path="tourism_project/data",
+    folder_path="data",
     repo_id=repo_id,
     repo_type=repo_type,
 )
